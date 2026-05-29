@@ -1,0 +1,52 @@
+{
+  "name": "ml-book",
+  "version": "0.1.0",
+  "description": "codebase for my ML book",
+  "keywords": [
+    "machine learning",
+    "book"
+  ],
+  "homepage": "https://github.com/LawrenceBorst/ml-book#readme",
+  "bugs": {
+    "url": "https://github.com/LawrenceBorst/ml-book/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LawrenceBorst/ml-book.git"
+  },
+  "license": "ISC",
+  "author": "Lawrence Borst",
+  "private": true,
+  "scripts": {
+    "build": "npm-run-all webpack hugo-build",
+    "hugo-build": "hugo -s ml-book --cleanDestinationDir",
+    "webpack": "node_modules/webpack/bin/webpack.js",
+    "webpack-watch": "node_modules/webpack/bin/webpack.js --watch",
+    "upload": "rsync -avz --delete ./public/ $UPLOAD_TARGET -e \"ssh -i ~/.ssh/$DEPLOYMENT_KEY -o StrictHostKeyChecking=no\"",
+    "deploy": "npm-run-all webpack hugo-build upload",
+    "hugo-server": "hugo server -s ml-book --disableFastRender",
+    "dev": "npm-run-all webpack --parallel webpack-watch hugo-server",
+    "lint:js": "eslint .",
+    "lint:css": "stylelint \"**/*.scss\"",
+    "lint:html": "htmlhint \"ml-book/layouts/**/*.html\"",
+    "lint:md": "markdownlint-cli2 \"**/*.md\" \"!node_modules/**\"",
+    "check-format": "prettier --check .",
+    "lint": "npm run lint:js && npm run lint:css && npm run lint:html && npm run lint:md",
+    "fix:js": "eslint . --fix",
+    "fix:css": "stylelint \"**/*.scss\" --fix",
+    "fix:format": "prettier --write .",
+    "fix": "npm run fix:js && npm run fix:css && npm run fix:format"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.1.0",
+    "htmlhint": "^1.9.2",
+    "markdownlint-cli2": "^0.22.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.8.1",
+    "stylelint": "^17.6.0",
+    "stylelint-config-standard-scss": "^17.0.0",
+    "webpack": "^5.105.4",
+    "webpack-cli": "^7.0.2"
+  }
+}
