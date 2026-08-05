@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>{{ .Site.Title }}</title>
+    {{ $style := resources.Get "scss/main.scss" | toCSS }}
+    <link rel="stylesheet" href="{{ $style.RelPermalink }}" />
+  </head>
+  <body>
+    {{ partial "navbar.html" . }}
+    <div class="content container">
+      {{ block "main" . }}{{ end }}
+    </div>
+  </body>
+</html>

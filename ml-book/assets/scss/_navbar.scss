@@ -1,0 +1,13 @@
+.navbar {
+    display: flex;
+    flex-direction: row;
+    gap: $space-lg;
+    padding-top: $space-md;
+    padding-bottom: $space-md;
+    background-color: $color-primary;
+    color: white;
+}
+
+.navbar-container {
+    background-color: $color-primary;
+}
