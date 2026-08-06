@@ -8,8 +8,6 @@
   </head>
   <body>
     {{ partial "navbar.html" . }}
-    <div class="content container">
-      {{ block "main" . }}{{ end }}
-    </div>
+    <div class="content container">{{ block "main" . }}{{ end }}</div>
   </body>
 </html>
