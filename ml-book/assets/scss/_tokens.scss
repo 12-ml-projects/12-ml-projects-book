@@ -1,21 +1,21 @@
 // colors
-$color-primary:   #b51616;
+$color-primary: #b51616;
 $color-secondary: #f3c5c5;
-$color-accent:    #f59e0b;
+$color-accent: #f59e0b;
 
 // text
-$color-text:      #252525;
-$color-text-muted:#6b7280;
-$color-bg:        #ffffff;
-$color-bg-alt:    #f9fafb;
-$color-border:    #e5e7eb;
+$color-text: #252525;
+$color-text-muted: #6b7280;
+$color-bg: #fff;
+$color-bg-alt: #f9fafb;
+$color-border: #e5e7eb;
 
 // spacing
-$space-xs:  4px;
-$space-sm:  8px;
-$space-md:  16px;
-$space-lg:  32px;
-$space-xl:  64px;
+$space-xs: 4px;
+$space-sm: 8px;
+$space-md: 16px;
+$space-lg: 32px;
+$space-xl: 64px;
 $space-2xl: 128px;
 
 // typography
@@ -23,23 +23,22 @@ $font-sans: 'Roboto', system-ui, sans-serif;
 $font-mono: 'Fira Code', monospace;
 
 // font sizes
-$font-size-sm:    0.875rem;
-$font-size-base:  1rem;
-$font-size-lg:    1.25rem;
-$font-size-xl:    1.5rem;
-$font-size-2xl:   2rem;
-$font-size-3xl:   3rem;
+$font-size-sm: 0.875rem;
+$font-size-base: 1rem;
+$font-size-lg: 1.25rem;
+$font-size-xl: 1.5rem;
+$font-size-2xl: 2rem;
+$font-size-3xl: 3rem;
 
 // font weights
 $font-weight-normal: 400;
 $font-weight-medium: 600;
-$font-weight-bold:   800;
-
-$line-height-tight:  1.25;
-$line-height-base:   1.6;
+$font-weight-bold: 800;
+$line-height-tight: 1.25;
+$line-height-base: 1.6;
 
 // breakpoints
-$bp-sm:  640px;
-$bp-md:  768px;
-$bp-lg:  1024px;
-$bp-xl:  1280px;
+$bp-sm: 640px;
+$bp-md: 768px;
+$bp-lg: 1024px;
+$bp-xl: 1280px;

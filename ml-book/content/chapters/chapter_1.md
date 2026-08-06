@@ -1,6 +1,8 @@
 +++
 date = '2026-07-27T19:29:54+02:00'
+weight = 1
 draft = false
+status = 'draft'
 title = 'Feedforward Neural Networks from Scratch'
 +++
 
@@ -15,6 +17,7 @@ While we can write these networks up in a few lines of code with machine learnin
 In this chapter we will look at the history of feedforward neural networks. We will explore the foundational concepts of supervised machine learning, including loss functions, gradient descent, regularisation, overfitting and underfitting, metrics, and more. We will also explore the inner workings of automatic differentiation and backpropagation.
 
 ## A Brief History
+
 > "Ultimately, we will get real histories of Artificial Intelligence . . . , written with as much objectivity as the historians of science can muster. That time is certainly not yet". - Allen Newell in 1982
 
 I cannot give a sound and complete account of artificial intelligence. The same can be said for neural networks. At best I can give one narrative of an ineffable history, in a way part of a neverending game of Chinese whisper. Before diving in, it is worth stating that the triumphs, trials and tribulations of neural network research encompass a vivid epic. The field has had quite a thorny past which I hope to preserve a little in this brief history. I also hope to convey some of the engineering wonder that were these early models.
@@ -37,7 +40,7 @@ Historically, the wax and wane of neural network research has been repeatedly ma
 
 [^n2010]: Nilsson, N. J. (2010). The Quest for Artificial Intelligence: A History of Ideas and Achievements. Cambridge University Press
 
-[^o1996]: Olazaran, M. (1996). A Sociological Study of the Official History of the Perceptrons Controversy. Social Studies of Science, 26(3), 611–659. http://www.jstor.org/stable/285702
+[^o1996]: Olazaran, M. (1996). A Sociological Study of the Official History of the Perceptrons Controversy. Social Studies of Science, 26(3), 611–659.
 
 [^r1958]: Rosenblatt, F. (1958). The perceptron: A probabilistic model for information storage and organization in the brain. Psychological Review, 65(6), 386–408.
 

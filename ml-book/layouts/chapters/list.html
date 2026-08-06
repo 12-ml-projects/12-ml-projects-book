@@ -1,0 +1,19 @@
+{{ define "main" }}
+<header>
+  <h1>{{ .Title }}</h1>
+</header>
+<div class="chapter-list">
+  {{ range $i, $page := .Pages }}
+  <a
+    class="chapter-card status-{{ replace $page.Params.status ' ' '-' }}"
+    href="{{ $page.RelPermalink }}"
+  >
+    <h2>
+      {{ add $i 1 }}. {{ $page.Title }}{{ if $page.Params.status }}
+      <span class="chapter-status">({{ $page.Params.status }})</span>{{ end }}
+    </h2>
+    {{ $page.Summary }}
+  </a>
+  {{ end }}
+</div>
+{{ end }}
