@@ -5,6 +5,7 @@
     <title>{{ .Site.Title }}</title>
     {{ $style := resources.Get "scss/main.scss" | toCSS }}
     <link rel="stylesheet" href="{{ $style.RelPermalink }}" />
+    {{ if .Param "math" }} {{ partialCached "math.html" . }} {{ end }}
   </head>
   <body>
     {{ partial "navbar.html" . }}
