@@ -1,3 +1,6 @@
 baseURL = 'https://mlprojectsbook.com/'
 locale = 'en-us'
 title = '12 Machine Learning Projects'
+
+[params]
+  math = true
