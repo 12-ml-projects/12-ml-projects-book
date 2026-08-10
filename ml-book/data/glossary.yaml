@@ -1,0 +1,1 @@
+sgd: "Stochastic Gradient Descent — an optimization method that updates model parameters using the gradient estimated from one (or a few) training examples at a time, rather than the full dataset. In its basic form it follows the steepest change on the loss landscape, but it can be modified to include momentum, adaptive learning rates, and more."

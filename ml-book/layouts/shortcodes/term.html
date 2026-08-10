@@ -1,0 +1,6 @@
+{{- $key := .Get 0 | urlize -}}
+{{- $def := index hugo.Data.glossary $key -}}
+{{- if not $def -}}
+  {{- errorf "term shortcode: no glossary entry found for %q in %s" $key .Page.File.Filename -}}
+{{- end -}}
+<abbr title="{{ $def }}">{{ with .Inner }}{{ . }}{{ else }}{{ .Get 0 }}{{ end }}</abbr>{{- "" -}}
