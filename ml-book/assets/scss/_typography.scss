@@ -30,3 +30,15 @@ a {
 
   &:hover { opacity: 0.75; }
 }
+
+em {
+  font-style: italic;
+}
+
+strong {
+  font-weight: $font-weight-bold;
+}
+
+abbr {
+  color: $color-secondary;
+}
