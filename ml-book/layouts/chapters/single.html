@@ -2,10 +2,23 @@
 <main class="chapter">
   <article class="chapter-content">
     <header class="chapter-header">
-      <h1>{{ .Title }}</h1>
+      {{ with .Parent }}
+      <a class="chapter-number" href="{{ .RelPermalink }}">Chapter {{ .Weight }}: {{ .Title }}</a>
+      {{ end }}
+      <h1>{{ .Parent.Weight }}.{{ .Weight }} {{ .Title }}</h1>
     </header>
 
     <div class="chapter-body">{{ .Content }}</div>
   </article>
+
+  {{/* Pages.Next/Prev are inverted relative to weight order */}} {{ $pages :=
+  .CurrentSection.RegularPages }}
+  <nav class="subchapter-nav">
+    {{ with $pages.Next . }}
+    <a class="subchapter-prev" href="{{ .RelPermalink }}">← {{ .Title }}</a>
+    {{ end }} {{ with $pages.Prev . }}
+    <a class="subchapter-next" href="{{ .RelPermalink }}">{{ .Title }} →</a>
+    {{ end }}
+  </nav>
 </main>
 {{ end }}
