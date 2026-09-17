@@ -3,9 +3,15 @@ date = '2026-07-27T19:29:54+02:00'
 weight = 5
 draft = false
 status = 'draft'
-title = 'Language Model from Scratch'
+title = 'A Transformer in PyTorch'
 +++
-Transformer models were introduced in the 2017 paper *attention is all you need*[^vaswani2017] initially targeted at the problem of language. Not long after, it was realised they could be applied to a range of problems in a landmark paper by Dosovitskiy et. al., which applied transformers to the problem of image recognition[^dosovitskiy2021][^fn_vision_transformer].
+In The Gold-Bug, Legrand breaks the cipher by counting symbol frequencies.
+
+The lesson here is that English is redundant. English is far from universal, and there are numerous constraints imposed on English text due to statistical regularities.
+
+
+
+Transformer models were introduced in the 2017 paper *attention is all you need*[^vaswani2017] initially targeted at the problem of language. Not long after, it was realised they could be applied to a range of problems in a landmark paper by Dosovitskiy et al., which applied transformers to the problem of image recognition[^dosovitskiy2021][^fn_vision_transformer].
 
 It seems it has become somewhat of a rite of passage to replicate the transformer from the original paper. At the time of writing, the original transformer paper has been cited over 180,000 times, alongside in total 600 registered implementations on [paperswithcode](https://paperswithcode.com/) alone. Since then, the transformer architecture has spawned many lines of research focusing on modifications and tricks.
 

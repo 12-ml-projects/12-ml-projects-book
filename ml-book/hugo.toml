@@ -3,6 +3,8 @@ locale = 'en-us'
 title = '12 Machine Learning Projects'
 
 [markup]
+  [markup.highlight]
+    noClasses = false
   [markup.goldmark]
     [markup.goldmark.extensions]
       [markup.goldmark.extensions.passthrough]
