@@ -5,22 +5,24 @@ on:
   push:
     branches:
       - main
+
 permissions:
   contents: read
+
 jobs:
+  lint-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: npm run lint
+      - run: npm run check-format
+
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-      - run: npm ci
-      - name: Lint
-        run: npm run lint
-      - name: Check formatting
-        run: npm run check-format
+      - uses: ./.github/actions/setup
       - name: Read Hugo version
         id: hugo-version
         run: echo "version=$(cat .hugo-version)" >> $GITHUB_OUTPUT

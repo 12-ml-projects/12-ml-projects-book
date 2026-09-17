@@ -1,0 +1,24 @@
+.alert {
+    padding: $space-md;
+    margin-bottom: $space-md;
+    border-left: 4px solid $color-border;
+    border-radius: 4px;
+    background-color: $color-bg-alt;
+
+    > :last-child {
+        margin-bottom: 0;
+    }
+}
+
+.alert-title {
+    font-weight: $font-weight-bold;
+    margin-bottom: $space-sm;
+}
+
+.alert-note {
+    border-left-color: $color-primary;
+
+    .alert-title {
+        color: $color-primary;
+    }
+}

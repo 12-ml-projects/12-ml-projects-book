@@ -18,3 +18,28 @@
         color: $color-primary;
     }
 }
+
+.chapter-number {
+    display: block;
+    color: $color-text-muted;
+    font-size: $font-size-sm;
+    margin-bottom: $space-xs;
+}
+
+.subchapter-list {
+    margin-bottom: $space-lg;
+
+    li {
+        margin-bottom: $space-sm;
+    }
+}
+
+.subchapter-nav {
+    display: flex;
+    justify-content: space-between;
+    margin: $space-lg 0;
+
+    .subchapter-next {
+        margin-left: auto;
+    }
+}

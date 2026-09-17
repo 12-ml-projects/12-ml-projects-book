@@ -42,3 +42,30 @@ strong {
 abbr {
   color: $color-secondary;
 }
+
+pre {
+  padding: $space-md;
+  margin-bottom: $space-md;
+  border: 1px solid $color-border;
+  border-radius: 4px;
+  overflow-x: auto;
+  background-color: $color-bg-alt;
+}
+
+code {
+  font-family: $font-mono;
+  font-size: $font-size-sm;
+}
+
+// the reset strips list markers; restore them for prose only
+.chapter-body {
+  ol, ul {
+    padding-left: $space-lg;
+    margin-bottom: $space-md;
+  }
+
+  ol { list-style: decimal; }
+  ul { list-style: disc; }
+
+  li { margin-bottom: $space-sm; }
+}
