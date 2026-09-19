@@ -54,47 +54,9 @@ This readily generalizes the univariate case, as you can check by just using one
 In machine learning we don't typically predict a single real number, nor do we have a single parameter to tune. While it is true that the loss function spits out a single number, between your inputs and the loss function are a series of functions that take high-dimensional data to high-dimensional data. Our machine learning models can be, generally speaking, be broken up into a series of functions of the form \(f:\mathbb{R}^{n} \rightarrow \mathbb{R}^{m}\). The model as a whole can also be interpreted as one such function where the domain represents the set of all weights (including inputs, held fixed), and the codomain represents the set of all outputs.
 
 > [!Note]
-> Oftentimes, we will hear practitioners talk about "the gradient of the loss function", which is really saying something very specific—the gradient of the loss as a function of the weights, keeping the inputs and outputs fixed. Abstractly, the whole pipeline relates inputs, weights and outputs to some real-valued loss. \(F(x, w, y) = L(M(x : w), y)\) -- TODO: continue this paragraph -- Multiplying out your weights and taking a gradient like this directly is unwise though, since it would be computationally inefficient. The fact that we know the parts making up the network—activation functions, matrix multiplications, convolutions—in the first place is precisely what allows us to calculate over these parts individually, efficiently, and combine them into a final answer. We shall see that automatic differentiation, the most sophisticated form described here, is in principle just the chain rule combined with caching and clever recombination.
-
-
-
-
-
-To reason
-
-
-Each output coordinate \(f_{i}\) is a real-valued function of \(n\) variables, so it has a gradient of its own. Stacking those \(m\) gradients as rows gives the Jacobian
-
-\[
-J_{f} =
-\begin{bmatrix}
-\frac{\partial f_{1}}{\partial x_{1}} & \cdots & \frac{\partial f_{1}}{\partial x_{n}} \\
-\vdots & \ddots & \vdots \\
-\frac{\partial f_{m}}{\partial x_{1}} & \cdots & \frac{\partial f_{m}}{\partial x_{n}}
-\end{bmatrix}
-=
-\begin{bmatrix}
-\nabla f_{1} \\
-\vdots \\
-\nabla f_{m}
-\end{bmatrix}
-\]
-
-an \(m \times n\) matrix holding every partial derivative of every output with respect to every input.
-
-Read it back through the intuition of small changes. Row \(i\) is the gradient of output \(i\), and answers "if I nudge the inputs, how does this one output respond?". Column \(j\) collects the partial derivatives with respect to \(x_{j}\), and answers the complementary question, "if I nudge this one input, how do all of the outputs respond?". Nudge every input at once by a small displacement \(\boldsymbol{\delta}\) and the two readings combine into
-
-\[
-f(\textbf{x} + \boldsymbol{\delta}) \approx f(\textbf{x}) + J_{f}(\textbf{x})\,\boldsymbol{\delta}
-\]
-
-which is the tangent plane again, with a matrix where the gradient used to be. The Jacobian, in other words, is the local linear approximation of \(f\).
-
-Two cases are worth naming. When \(m = 1\) the Jacobian is a single row and is nothing other than the gradient; this is the case of a loss function, which swallows many parameters and returns one number. When \(n = 1\) it is a single column, describing a curve through \(\mathbb{R}^{m}\).
-
-<!-- TODO: image of the Jacobian as a stack of gradients -->
-
-There are a few methods of differentiating a function composed of other functions, and all rely on the chain rule. In the language above the chain rule is a matrix product: the Jacobian of \(g \circ f\) is \(J_{g}J_{f}\), each factor evaluated at the appropriate point. Backpropagation, as we will see, comes down to a careful choice of the order in which such a chain of matrices is multiplied.
+> Oftentimes, we will hear practitioners talk about "the gradient of the loss function", which is really saying something very specific—the gradient of the loss as a function of the weights, keeping the inputs and outputs fixed. Abstractly, the whole pipeline relates inputs, weights and outputs to some real-valued loss. \(F(x, w, y) = L(M(x | w), y)\), and it is with respect to this function that we take partial derivatives of the weights, but not the inputs and outputs.
+>
+> Multiplying out your weights and taking a gradient like this directly is unwise though, since it would be computationally inefficient. The fact that we know the parts making up the network—activation functions, matrix multiplications, convolutions—in the first place is precisely what allows us to calculate over these parts individually, efficiently, and combine them into a final answer. We shall see that automatic differentiation, the most sophisticated form described here, is in principle just the chain rule combined with caching and clever recombination.
 
 ## Numerical Differentiation
 In brief, numerical differentiation approximates the derivative of a function by sampling two nearby points. The derivative of a real-valued function is[^note_finite_diffs]
@@ -109,9 +71,121 @@ so we stop short of the limit and take a small but finite \(h\):
 f'(x) \approx \frac{f(x+h)-f(x)}{h}
 \]
 
-For many reasonable functions, the difference \(h\) does not have to be extremely close to \(0\) to get an acceptable approximation of \(f'(x)\). Nor should it be: shrinking \(h\) reduces the approximation error, but it also subtracts two nearly equal floating-point numbers, and the resulting cancellation eats precisely the digits we are trying to measure. In double precision a forward difference is at its best around \(h \approx 10^{-8}\). A similar formula exists in the multivariate case, where you would be looking for partial derivatives, nudging one coordinate at a time and leaving the others alone.
+For many reasonable functions, the difference \(h\) does not have to be extremely close to \(0\) to get an acceptable approximation of \(f'(x)\)[^footnote_small_diff]
 
 One way, then, to get the gradient \( \nabla_{\textbf{w}} L \) of the loss is to approximate it. But note that this gradient is a vector of \(n_{w}\) partial derivatives, where \(n_{w}\) is the number of parameters, and each of them needs its own nudged forward pass—\(n_{w} + 1\) evaluations of the network in total, or twice that for central differences. For a model with millions of parameters, a single training step would cost millions of forward passes. Numerical differentiation stays useful as a way to check a gradient obtained by other means, on a handful of coordinates, but it cannot train a network.
+
+## Computational Graphs and Differentiation
+Let us focus on a test function, \(e(x, y): \mathbb{R}^{2} \rightarrow \mathbb{R}\) defined by a series of equations
+
+\[
+\begin{aligned}
+a(x) = sin(x) \\
+b(x) = a(x) + x \\
+c(x, y) = x \times y \\
+d(x, y) = c(x, y)^{2} \\
+e(x, y) = d(x, y) + b(x)
+\end{aligned}
+\]
+
+We can get \(f(x, y)\) by substitution. We pass in \(e(x)\) into \(f(x)\) to get \(f(x) = sin(x) + x\). We then 
+
+The process of substituting in this way suggests a graph underlying the computation. We see that \(a\) depends on \(x\), \(b\) depends on \(a\) and \(x\) and so on. Of course, \(x\) and \(y\) do not depend on anything, and can be thought of as computational sources. The below table illustrates the dependencies.
+
+| Value   | Depends On    |
+| :---:   |    :----:     |
+| \(x\)   | —             |
+| \(y\)   | —             |
+| \(a\)   | \(x\)         |
+| \(b\)   | \(a\), \(x\)  |
+| \(c\)   | \(x\), \(y\)  |
+| \(d\)   | \(c\)         |
+| \(e\)   | \(d\), \(f\)  |
+
+
+-- INSERT IMAGE HERE --
+
+
+This decomposition is chosen to expose a few underlying primitives. Each "step", so to speak, is an elementary function. \(a(x)\) applies the \(\sin\) function. But also \(b(x)\) can be thought of as addition, naemly as \(\text{add}(a(x), x)\), where \(add(a, b) = a + b\), and so on—in fact, \(c\) is doing multiplication over two values, \(d\) is just multipication (or exponentiation) over a value, and \(e\) is also addition. We call these primitive functions operators—in practice you can represent a large family of computations using a handful of operators.
+
+The graph above is an example of a computation graph, and each node in it represents an application of an operation. Each edge represents a dependency. Computation graphs, together with the chain rule, form the basis of automatic differentiation. The above graph is also a directed acyclic graph, or DAG, meaning that each edge has a start and end, and there are no cycles in the graph. Why are there no cycles? Because if there were, there would be nodes whose value ultimately depended on the node knowing its value beforehand, a kind of "ask your mom, ask your dad"-type chain.
+
+We see that when you use substitution to find \(f(x, y)\), you are essentially walking the graph from the inputs \(x\) and \(y\), and keeping a record of the expression evaluated at each node—you could also say each node "holds" the evaluation. If you traverse this graph in a topological order—that is, when you only visit a node if you have visited its dependencies—you can always make use of your record to find the next node. The final node will be \(f(x, y)\) and give you the answer.
+
+### Differentiating without the Chain Rule
+To differentiate \(f(x, y)\) with respect to its variables, one way is simply to find the closed form for \(f(x, y)\) in terms of \(x\) and \(y\). If we substitute via the process above we get \(f(x, y) = x^{2}y^{2} + x + sin(x)\). We can then take partial derivatives to get
+
+\[
+\begin{aligned}
+\frac{\partial f}{\partial x} = 2xy^{2} + 1 + cos(x) \\
+\frac{\partial f}{\partial y} = 2x^{2}y
+\end{aligned}
+\]
+
+This works, but this requires us to substitute function expressions. Another problem is that this method of doing symbolic differentiation doesn't lend itself easily to a computer in the way that humans reason about it—in fact, it's not immediately clear how you would teach a computer to do this. Surely when you took the partial derivatives, you were thinking "well, this is so on and so multiplied by so and so"—we often employ the sum, product and reciprocal rule as given primitives. But a computer would just see a string of symbols and pluses and minuses, and so on.
+
+- A computer's internal representation of the equation is not a string, but a computational DAG. Strings are secondary.
+- A computer only needs the chain rule, and does not necessarily need to use the product, sum or reciprocal rules
+
+With humans, it's the opposite.
+
+### Differentiating with the Chain Rule
+Let us look more closely at what a computer does. This time, we will rewrite the list of equations with the primitives made explicit.
+
+\[
+\begin{aligned}
+a(x) = sin(x) \\
+b(x) = \text{add}(a(x), x) \\
+c(x, y) = \text{mul}(x, y) \\
+d(x, y) = \text{mul}(c(x, y), c(x, y)) \\
+e(x, y) = \text{add}(d(x, y), b(x))
+\end{aligned}
+\]
+
+Let us find the partial derivative of \(e\) with respect to \(x\). The chain rule, written out exhaustively, tells us that
+\[
+\begin{aligned}
+\frac{\partial b}{\partial x} = \frac{\partial \text{add}(a(x), x)}{\partial a} \frac{\partial a}{\partial x} + \frac{\partial \text{add}(a(x), x)}{\partial x} \frac{\partial x}{\partial x} \\
+\frac{\partial c}{\partial x} = \frac{\partial \text{mul}(x, y)}{\partial x} \frac{\partial x}{\partial x} + \frac{\partial \text{mul}(x, y)}{\partial y} \frac{\partial y}{\partial x} \\
+\frac{\partial d}{\partial x} = \frac{\partial \text{mul}(c(x, y), c(x, y))}{\partial c} \frac{\partial c}{\partial x} + \frac{\partial \text{mul}(c(x, y), c(x, y))}{\partial c} \frac{\partial c}{\partial x} \\
+\frac{\partial e}{\partial x} = \frac{\partial \text{add}(c(x, y), b(x))}{\partial c} \frac{\partial c}{\partial x} + \frac{\partial \text{add}(c(x, y), b(x))}{\partial b} \frac{\partial b}{\partial x}
+\end{aligned}
+\]
+
+Note that there is again an underlying computational graph. It is, in fact, the same as the one we saw earlier. But this time the nodes store the results of partial derivatives. For example, you can see that \(\frac{\partial e}{\partial x}\) depends on \(\frac{\partial d}{\partial x}\) and \(\frac{\partial b}{\partial x}\) in a similar way to how \(e\) itself depends on \(d\) and \(b\).
+
+But what about the partial derivatives involving \(\text{mul}\) and \(\text{add}\)? These are primitives, and the computer will need to know the associated derivatives with respect to the inputs.
+
+In code, this might look something like
+
+```python
+class Add(Operation):
+    def apply(x: float, y: float) -> float:
+        return x + y
+    
+    def partial(x: float, y: float, idx: int) -> float:
+        return 1.0
+
+
+class Mul(Operation):
+    def apply(x: float, y: float) -> float:
+        return x * y
+    
+    def partial(x: float, y: float, idx: int) -> float:
+        if idx == 0:
+            return y
+        elif idx == 1:
+            return x
+        raise ValueError("idx must be `0` or `1`")
+```
+
+It is clear that the partial derivative with respect to \(x\) and \(y\) can be found programmatically by traversing the graph in topological order and keeping a record of partials.
+
+
+
+
+
+
 
 ## Symbolic Differentiation
 Another way to do so is symbolically. There is a matrix calculus which can be exploited. Take for example the following neural network, defined mathematically:
@@ -141,3 +215,5 @@ and each one is, by the chain rule, a product of the Jacobians of the steps lyin
 f'(x) = \lim_{h \to 0} \frac{f(x+h/2)-f(x - h/2)}{h}\) whose error term is \(O(h^{2})\) rather than \(O(h)\). This is also called a central finite difference, as opposed to a forward difference.
 
 [^footnote_diff_derivation]: You might object, though, that we have constrained the plane along the x and y axis. But this doesn't tell us the plane meets the function as desired along other lines, like \(x=y\). In fact it does, and showing this requires exploiting the linearity of the derivative.
+
+[^footnote_small_diff]: Nor should you want an extremely small \(h\): shrinking \(h\) reduces the approximation error, but it also subtracts two nearly equal floating-point numbers.

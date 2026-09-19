@@ -42,3 +42,37 @@ strong {
 abbr {
   color: $color-secondary;
 }
+
+table {
+  width: 100%;
+  margin-bottom: $space-md;
+  text-align: left;
+}
+
+th,
+td {
+  padding: $space-sm $space-md;
+  border-bottom: 1px solid $color-border;
+  vertical-align: top;
+
+  &:first-child { padding-left: 0; }
+  &:last-child { padding-right: 0; }
+}
+
+th {
+  font-weight: $font-weight-medium;
+  border-bottom-width: 2px;
+}
+
+tbody tr:last-child {
+  th,
+  td { border-bottom: none; }
+}
+
+caption {
+  caption-side: bottom;
+  padding-top: $space-sm;
+  color: $color-text-muted;
+  font-size: $font-size-sm;
+  text-align: left;
+}
